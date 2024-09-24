@@ -9,6 +9,9 @@ EAST = "e"
 SOUTH = "s"
 WEST = "w"
 QUIT = "quit"
+SAVE = "save"
+LOAD = "load"
+
 
 STARTING_LOCATION = (1, 1)
 FINAL_DESTINATION = (3, 1)
@@ -19,16 +22,6 @@ def main():
     location_tuple = STARTING_LOCATION
     while location_tuple != FINAL_DESTINATION:
         location_tuple = play_one_move(location_tuple)
-
-        if os.path.exists(SAVE_PATH):
-            print("Save file found, writing to it...")
-            with open(file=SAVE_PATH, mode="a") as file:
-                file.write(str(location_tuple) + "\n")
-        else:
-            print("No pre-existing save file found, creating new save file...")
-            with open(file=SAVE_PATH, mode="w") as file:
-                file.write(str(location_tuple) + "\n")
-        file.close()
 
     print("Victory!")
     # Example of creating a file in Python
@@ -45,7 +38,52 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
 
     if direction == QUIT:
         print("bla")
-        exit(0)
+        exit()
+        
+    elif direction == SAVE:
+        if os.path.exists(SAVE_PATH):
+            print("Save file found, writing to it...")
+            with open(file=SAVE_PATH, mode="a") as file:
+                file.write(str(location) + "\n")
+        else:
+            print("No pre-existing save file found, creating new save file...")
+            with open(file=SAVE_PATH, mode="w") as file:
+                file.write(str(location) + "\n")
+        file.close()
+
+    elif direction == LOAD:
+        if os.path.exists(SAVE_PATH):
+            print("Available saves: ")
+            with open(file=SAVE_PATH, mode="r") as file:
+                line_number = 0
+                lines: list = []
+                for line in file:
+                    line_number += 1
+                    lines.append(str(line.strip()))
+                    print(f"Save: {line_number}, {line.strip()}")
+                print(lines)
+                try:
+                    line_number = int(input("Please enter the number of the save: "))
+                    if 1 <= line_number <= len(lines):
+                        location_str = lines[line_number].strip()
+                        location_str = location_str.strip("()")
+                        x_str, y_str = location_str.split(", ")
+                        x = int(x_str)
+                        y = int(y_str)
+                        location = (x, y)
+                    else:
+                        print("Invalid save number.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+            location = move(direction, location)
+
+
+
+
+
+        else:
+            print("ERROR: No saves found! :( Please save your game to be able to load saves.")
+        file.close()
 
     elif direction in valid_directions_str_tuple:
         location = move(direction, location)
@@ -81,9 +119,13 @@ def find_directions(location: Tuple[int, int]) -> Tuple[str, ...]:
 def get_direction(valid_directions: Tuple[str, ...]) -> str:
     while True:
         print_directions(valid_directions)
-        direction = input("Direction (or 'quit' to quit): ")
+        direction = input("Direction (also : 'quit', 'save' or 'load'): ")
         if direction == QUIT:
             return QUIT
+        elif direction == SAVE:
+            return SAVE
+        elif direction == LOAD:
+            return LOAD
         elif direction in valid_directions:
             return direction
         else:
