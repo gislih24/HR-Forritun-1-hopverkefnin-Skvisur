@@ -54,7 +54,7 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
             print("Available saves: ")
             with open(file=SAVE_PATH, mode="r") as file:
                 line_number = 0
-                lines = []
+                lines: list = []
                 for line in file:
                     line_number += 1
                     lines.append(str(line.strip()))
