@@ -37,7 +37,7 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
     if direction == QUIT:
         print("bla")
         exit()
-
+        
     elif direction == SAVE:
         if os.path.exists(SAVE_PATH):
             print("Save file found, writing to it...")
@@ -54,18 +54,16 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
             print("Available saves: ")
             with open(file=SAVE_PATH, mode="r") as file:
                 line_number = 0
+                lines = []
                 for line in file:
                     line_number += 1
+                    lines.append(str(line.strip()))
                     print(f"Save: {line_number}, {line.strip()}")
-                lines = file.readlines()
-                for line in lines:
-                    line_number += 1
-                    print(f"Save {line_number}: {line.strip()}")
+                print(lines)
                 try:
-                    line_number_input = int(input("Please enter the number of the save: "))
-                    print(line_number_input, len(lines))
-                    if line_number_input <= len(lines):
-                        location_str = lines[line_number_input].strip()
+                    line_number = int(input("Please enter the number of the save: "))
+                    if 1 <= line_number <= len(lines):
+                        location_str = lines[line_number].strip()
                         location_str = location_str.strip("()")
                         x_str, y_str = location_str.split(", ")
                         x = int(x_str)
@@ -77,10 +75,12 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
                     print("Invalid input. Please enter a number.")
             location = move(direction, location)
 
+
+
+
+
         else:
-            print(
-                "ERROR: No saves found! :( Please save your game to be able to load saves."
-            )
+            print("ERROR: No saves found! :( Please save your game to be able to load saves.")
         file.close()
 
     elif direction in valid_directions_str_tuple:
