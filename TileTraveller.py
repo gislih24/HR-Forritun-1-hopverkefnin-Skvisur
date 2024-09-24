@@ -36,7 +36,7 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
     if direction == QUIT:
         print("bla")
         exit()
-    if direction == SAVE:
+    elif direction == SAVE:
         if os.path.exists(SAVE_PATH):
             print("Save file found, writing to it...")
             with open(file=SAVE_PATH, mode="a") as file:
@@ -80,7 +80,7 @@ def find_directions(location: Tuple[int, int]) -> Tuple[str, ...]:
 def get_direction(valid_directions: Tuple[str, ...]) -> str:
     while True:
         print_directions(valid_directions)
-        direction = input("Direction (or 'quit' to quit): ")
+        direction = input("Direction (also : 'quit' or 'save'): ")
         if direction == QUIT:
             return QUIT
         elif direction == SAVE:
