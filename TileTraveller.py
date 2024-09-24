@@ -8,6 +8,7 @@ SOUTH = "s"
 WEST = "w"
 QUIT = "quit"
 SAVE = "save"
+LOAD = "load"
 
 
 STARTING_LOCATION = (1, 1)
@@ -36,6 +37,7 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
     if direction == QUIT:
         print("bla")
         exit()
+        
     elif direction == SAVE:
         if os.path.exists(SAVE_PATH):
             print("Save file found, writing to it...")
@@ -46,6 +48,42 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
             with open(file=SAVE_PATH, mode="w") as file:
                 file.write(str(location) + "\n")
         file.close()
+
+    elif direction == LOAD:
+        if os.path.exists(SAVE_PATH):
+            print("Available saves: ")
+            with open(file=SAVE_PATH, mode="r") as file:
+                line_number = 0
+                for line in file:
+                    line_number += 1
+                    print(f"Save: {line_number}, {line.strip()}")
+                lines = file.readlines()
+                for line in lines:
+                    line_number += 1
+                    print(f"Save {line_number}: {line.strip()}")
+                try:
+                    line_number = int(input("Please enter the number of the save: "))
+                    if 1 <= line_number <= len(lines):
+                        location_str = lines[line_number - 1].strip()
+                        location_str = location_str.strip("()")
+                        x_str, y_str = location_str.split(", ")
+                        x = int(x_str)
+                        y = int(y_str)
+                        location = (x, y)
+                    else:
+                        print("Invalid save number.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+            location = move(direction, location)
+
+
+
+
+
+        else:
+            print("ERROR: No saves found! :( Please save your game to be able to load saves.")
+        file.close()
+
     elif direction in valid_directions_str_tuple:
         location = move(direction, location)
     else:
@@ -85,6 +123,8 @@ def get_direction(valid_directions: Tuple[str, ...]) -> str:
             return QUIT
         elif direction == SAVE:
             return SAVE
+        elif direction == LOAD:
+            return LOAD
         elif direction in valid_directions:
             return direction
         else:
