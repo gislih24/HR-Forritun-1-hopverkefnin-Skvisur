@@ -79,7 +79,7 @@ def find_directions(location: Tuple[int, int]) -> Tuple[str, ...]:
 def get_direction(valid_directions: Tuple[str, ...]) -> str:
     while True:
         print_directions(valid_directions)
-        direction = input("Direction (or 'q' to quit): ")
+        direction = input("Direction (or 'quit' to quit): ")
         if direction == QUIT:
             return QUIT
         elif direction in valid_directions:
