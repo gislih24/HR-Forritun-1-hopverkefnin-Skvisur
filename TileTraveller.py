@@ -7,6 +7,8 @@ EAST = "e"
 SOUTH = "s"
 WEST = "w"
 QUIT = "quit"
+SAVE = "save"
+
 
 STARTING_LOCATION = (1, 1)
 FINAL_DESTINATION = (3, 1)
@@ -17,16 +19,6 @@ def main():
     location_tuple = STARTING_LOCATION
     while location_tuple != FINAL_DESTINATION:
         location_tuple = play_one_move(location_tuple)
-
-        if os.path.exists(SAVE_PATH):
-            print("Save file found, writing to it...")
-            with open(file=SAVE_PATH, mode="a") as file:
-                file.write(str(location_tuple) + "\n")
-        else:
-            print("No pre-existing save file found, creating new save file...")
-            with open(file=SAVE_PATH, mode="w") as file:
-                file.write(str(location_tuple) + "\n")
-        file.close()
 
     print("Victory!")
     # Example of creating a file in Python
@@ -43,8 +35,17 @@ def play_one_move(location: Tuple[int, int]) -> Tuple[int, int]:
 
     if direction == QUIT:
         print("bla")
-        exit(0)
-
+        exit()
+    if direction == SAVE:
+        if os.path.exists(SAVE_PATH):
+            print("Save file found, writing to it...")
+            with open(file=SAVE_PATH, mode="a") as file:
+                file.write(str(location) + "\n")
+        else:
+            print("No pre-existing save file found, creating new save file...")
+            with open(file=SAVE_PATH, mode="w") as file:
+                file.write(str(location) + "\n")
+        file.close()
     elif direction in valid_directions_str_tuple:
         location = move(direction, location)
     else:
@@ -82,6 +83,8 @@ def get_direction(valid_directions: Tuple[str, ...]) -> str:
         direction = input("Direction (or 'quit' to quit): ")
         if direction == QUIT:
             return QUIT
+        elif direction == SAVE:
+            return SAVE
         elif direction in valid_directions:
             return direction
         else:
